@@ -36,7 +36,7 @@ function App() {
     <div className="App">
       <header className="App-header">
         <img src={logo} className="App-logo" alt="logo" />
-        <div>{`App version: ${version}`}</div>
+        <div>{`It works, app version: ${version}`}</div>
         { updateAvailable && <div>Downloading update...</div> }
         { updateDownloaded && <div>
           <div onClick={restartApp}>Restart application</div>
