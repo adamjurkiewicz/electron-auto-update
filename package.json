@@ -6,6 +6,15 @@
     "type" : "git",
     "url" : "https://github.com/adamjurkiewicz/electron-auto-update.git"
   },
+  "build": {
+    "appId": "com.example.ElectronAutoUpdate",
+    "files": [
+      "src/**/*",
+      "node_modules/**/*",
+      "package.json"
+    ],
+    "extends": null
+  },
   "dependencies": {
     "@testing-library/jest-dom": "^5.16.1",
     "@testing-library/react": "^12.1.2",
@@ -21,14 +30,14 @@
     "typescript": "^4.5.4",
     "web-vitals": "^2.1.2"
   },
-  "main": "electron-starter.js",
+  "main": "src/electron-starter.js",
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
     "electron": "electron .",
-    "build:electron": "electron-builder build --win --publish never",
+    "build:electron": "npm run build && electron-builder build --win --publish never",
     "deploy:electron": "electron-builder build --win --publish always"
   },
   "eslintConfig": {
