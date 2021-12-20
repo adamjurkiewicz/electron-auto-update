@@ -1,8 +1,5 @@
-const electron = require('electron');
-// Module to control application life.
-const app = electron.app;
-// Module to create native browser window.
-const BrowserWindow = electron.BrowserWindow;
+const { app, BrowserWindow, ipcMain } = require('electron');
+const { autoUpdater } = require('electron-updater');
 
 const path = require('path');
 const url = require('url');
@@ -13,7 +10,11 @@ let mainWindow;
 
 function createWindow() {
     // Create the browser window.
-    mainWindow = new BrowserWindow({width: 800, height: 600});
+    mainWindow = new BrowserWindow({width: 800, height: 600, webPreferences: {
+            contextIsolation: false,
+            nodeIntegration: true,
+            enableRemoteModule: true,
+        }});
 
     // and load the index.html of the app.
     mainWindow.loadURL('http://localhost:3000');
@@ -28,6 +29,10 @@ function createWindow() {
         // when you should delete the corresponding element.
         mainWindow = null
     })
+
+    mainWindow.once('ready-to-show', () => {
+        autoUpdater.checkForUpdatesAndNotify();
+    });
 }
 
 // This method will be called when Electron has finished
@@ -50,6 +55,17 @@ app.on('activate', function () {
     if (mainWindow === null) {
         createWindow()
     }
+});
+
+ipcMain.on('app_version', (event) => {
+    event.sender.send('app_version', { version: app.getVersion() });
+});
+
+autoUpdater.on('update-available', () => {
+    mainWindow.webContents.send('update_available');
+});
+autoUpdater.on('update-downloaded', () => {
+    mainWindow.webContents.send('update_downloaded');
 });
 
 // In this file you can include the rest of your app's specific main process

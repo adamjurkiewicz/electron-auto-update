@@ -1,8 +1,23 @@
-import React from 'react';
+import React, {useEffect, useState} from 'react';
 import logo from './logo.svg';
 import './App.css';
+const { ipcRenderer } = window.require('electron');
 
 function App() {
+  const [version, setVersion] = useState('');
+
+  useEffect( () => {
+    if( ipcRenderer ){
+      ipcRenderer.on('app_version', (event: any, { version }: any) => {
+        ipcRenderer.removeAllListeners('app_version');
+        setVersion(version);
+      });
+      ipcRenderer.send('app_version');
+    }else{
+      console.log('ipcRenderer missing!');
+    }
+  }, [ipcRenderer]);
+
   return (
     <div className="App">
       <header className="App-header">
@@ -16,7 +31,7 @@ function App() {
           target="_blank"
           rel="noopener noreferrer"
         >
-          Learn React Quickly
+          {`App version: ${version}`}
         </a>
       </header>
     </div>
